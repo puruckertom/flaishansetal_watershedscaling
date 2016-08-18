@@ -17,7 +17,9 @@ mean_times <- ddply(proc_v_time, .(processors), summarize, mean_time=mean(time))
 base_mean <- mean_times[1]
 speedup <- base_mean/mean_times
 
-#add speedup
+#add wall time for serial write
+
+#add speedup with no write
 proc_v_time$speedup <- proc_1/proc_v_time$time
 
 #fig1 <- ggplot(proc_v_time, aes(processors), speedup)
