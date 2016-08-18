@@ -42,12 +42,27 @@ l99 = 1/((1-p99) + p99/proc)
 amdahl <- data.frame(cbind(proc,l50,l75,l90,l95,l99))
 
 #line plot
-ggplot(amdahl, aes(proc)) + 
-  geom_line(aes(y = l99, colour = "99%")) +
-  geom_line(aes(y = l95, colour = "95%")) +
-  geom_line(aes(y = l90, colour = "90%")) +
-  geom_line(aes(y = l75, colour = "75%")) +
-  geom_line(aes(y = l50, colour = "50%"))  +
-  geom_line(aes(y = speedup, colour = "observed")) +
-  scale_fill_discrete(breaksreverse)
+pdf(file= paste(ws_dir_figures, "fig1_procvspeed.pdf", sep=""), width = 4, height = 6)
+  ggplot(data=amdahl, aes(x=proc)) +
+    geom_line(aes(y = l99, colour = "99%")) +
+    geom_point(aes(y = l99, colour = "99%")) +
+    geom_line(aes(y = speedup, colour = "no write")) +
+    geom_point(aes(y = speedup, colour = "no write")) +
+    geom_line(aes(y = l95, colour = "95%")) +
+    geom_point(aes(y = l95, colour = "95%")) +
+    geom_line(aes(y = l90, colour = "90%")) +
+    geom_point(aes(y = l90, colour = "90%")) +
+    geom_line(aes(y = l75, colour = "75%")) +
+    geom_point(aes(y = l75, colour = "75%")) +
+    geom_line(aes(y = l50, colour = "50%"))  +
+    geom_point(aes(y = l50, colour = "50%"))  +
+    xlab("# Processors") + 
+    ylab("Speedup") +
+    ggtitle("Speedup versus Number of Processors") +
+    theme_bw() + #theme
+    theme(legend.position=c(.17, .78)) +
+    #theme(legend.title="Scenario") +
+    guides(col = guide_legend(title="Scenario",reverse = TRUE))
+dev.off()
+
 
