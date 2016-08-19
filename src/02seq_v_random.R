@@ -10,7 +10,7 @@ summary(seq_v_rand)
 
 factor(seq_v_rand$runtype)
 
-pdf(file= paste(ws_dir_figures, "fig2_proc_rand_seq.pdf", sep=""), width = 6, height = 4)
+pdf(file= paste(ws_dir_figures, "fig2_proc_rand_seq.pdf", sep=""), width = 8, height = 6)
   ggplot(seq_v_rand, aes(proc, time, fill=factor(runtype))) +
     geom_boxplot() +
     scale_x_discrete(labels=1:16) +
@@ -18,5 +18,7 @@ pdf(file= paste(ws_dir_figures, "fig2_proc_rand_seq.pdf", sep=""), width = 6, he
     xlab("Processor Completion (Fastest to Slowest)") + 
     ylab("Time (n=20)") +
     ggtitle("Processor Time Comparison") +
-    theme_bw()
+    theme_bw() +
+    theme(legend.position=c(.17, .84)) +
+    guides(fill=guide_legend(title=NULL, reverse=TRUE))
 dev.off()
