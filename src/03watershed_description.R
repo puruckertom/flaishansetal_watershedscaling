@@ -12,5 +12,6 @@ summary(lakes_per_bin)
 #  geom_histogram()
 
 
-qplot(bin, data=lakes_per_bin, weight=Lakes, geom="histogram", xlab="Bin ID", ylab="Number of Lakes", binwidth=1) +
+qplot(bin, data=lakes_per_bin, weight=Lakes, geom="histogram", xlab="Bin ID", 
+      ylab="Number of Lakes", xlim=c(1,29), fill=I("blue"), col=I("blue"), binwidth=1) + 
   theme_bw()
