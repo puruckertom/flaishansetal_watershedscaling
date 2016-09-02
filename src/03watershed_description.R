@@ -1,5 +1,5 @@
 #read input files
-#CONTROL
+#lakes per bin
 ws_filename <- paste(ws_dir_input, "lakes_per_bin.csv", sep = "")
 file.exists(ws_filename)
 lakes_per_bin <- read.csv(file = ws_filename, header = TRUE)
@@ -15,3 +15,8 @@ summary(lakes_per_bin)
 qplot(bin, data=lakes_per_bin, weight=Lakes, geom="histogram", xlab="Bin ID", 
       ylab="Number of Lakes", xlim=c(1,29), fill=I("blue"), col=I("blue"), binwidth=1) + 
   theme_bw()
+
+#reaches per lake
+ws_filename <- paste(ws_dir_input, "lakes_per_bin.csv", sep = "")
+file.exists(ws_filename)
+lakes_per_bin <- read.csv(file = ws_filename, header = TRUE)
