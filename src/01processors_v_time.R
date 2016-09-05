@@ -12,15 +12,22 @@ summary(proc_v_time)
 proc_1 <- proc_v_time[proc_v_time$processors==1,2]
 mean(proc_1)
 
-#get mean performance times
-mean_times <- ddply(proc_v_time, .(processors), summarize, mean_time=mean(time))[,2]
+#get mean performance times for model_only, others dont have replication
+mean_times <- ddply(proc_v_time, .(processors), summarize, mean_time=mean(model_only))[,2]
 base_mean <- mean_times[1]
-speedup <- base_mean/mean_times
+speedup_model_only <- base_mean/mean_times
+
+#others
+speedup_model_w_io_vector <- proc_v_time$model_w_io[!is.na(proc_v_time$model_w_io)]
+speedup_model_w_io <- speedup_model_w_io_vector[1]/speedup_model_w_io_vector
+speedup_post_process_vector <- proc_v_time$post_process[!is.na(proc_v_time$post_process)]
+speedup_post_process <- speedup_model_post_process[1]/speedup_model_post_process
+
 
 #add wall time for serial write
 
 #add speedup with no write
-proc_v_time$speedup <- proc_1/proc_v_time$time
+proc_v_time$speedup <- proc_1/proc_v_time$model_only
 
 #fig1 <- ggplot(proc_v_time, aes(processors), speedup)
 #fig1 + geom_boxplot()
@@ -41,28 +48,31 @@ l90 = 1/((1-p90) + p90/proc)
 l95 = 1/((1-p95) + p95/proc)
 l99 = 1/((1-p99) + p99/proc)
 
-amdahl <- data.frame(cbind(proc,l50,l75,l90,l95,l99))
+amdahl_df <- data.frame(cbind(proc,l50,l75,l90,l95,l99,
+                speedup_model_only,speedup_model_w_io,speedup_post_process))
+View(amdahl_df)
+
+amdahl_melt <- melt(amdahl_df, id.vars="proc")
+dim(amdahl_melt)
+summary(amdahl_melt)
+View(amdahl_melt)
+
+amdahl_melt$variable <- factor(amdahl_melt$variable, 
+    levels = c("l99","speedup_model_only","l95","speedup_model_w_io","l90","l75","speedup_post_process","l50"),
+    labels=c("99%","Model only","95%","Model with IO","90%","75%","Post-processing","50%")
+    )
+View(amdahl_melt)
 
 #line plot
 pdf(file= paste(ws_dir_figures, "fig1_procvspeed.pdf", sep=""), width = 4, height = 6)
-  ggplot(data=amdahl, aes(x=proc)) +
-    geom_line(aes(y = l99, colour = "99%")) +
-    geom_point(aes(y = l99, colour = "99%")) +
-    geom_line(aes(y = speedup, colour = "no write")) +
-    geom_point(aes(y = speedup, colour = "no write")) +
-    geom_line(aes(y = l95, colour = "95%")) +
-    geom_point(aes(y = l95, colour = "95%")) +
-    geom_line(aes(y = l90, colour = "90%")) +
-    geom_point(aes(y = l90, colour = "90%")) +
-    geom_line(aes(y = l75, colour = "75%")) +
-    geom_point(aes(y = l75, colour = "75%")) +
-    geom_line(aes(y = l50, colour = "50%"))  +
-    geom_point(aes(y = l50, colour = "50%"))  +
+  ggplot(data=amdahl, aes(x=proc,y=value, group=variable)) +
+    geom_line() +
+    geom_point() +
     xlab("# Processors") + 
     ylab("Speedup") +
     ggtitle("Speedup versus Number of Processors") +
     theme_bw() + #theme
-    theme(legend.position=c(.17, .78)) +
+    theme(legend.position=c(.23, .78)) +
     #theme(legend.title="Scenario") +
     guides(col = guide_legend(title="Scenario",reverse = TRUE))
 dev.off()
