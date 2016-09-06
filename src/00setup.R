@@ -5,7 +5,7 @@ if(length(new.packages)>0) {install.packages(new.packages)}
 
 #load library dependencies
 library(plyr)
-#library(reshape2)
+library(reshape2)
 library(ggplot2)
 #library(grid)
 #library(gridExtra)
@@ -21,6 +21,10 @@ version
 #tom epa windows 2
 if(Sys.info()[4]=="DZ2626UTPURUCKE"){
   ws_dir<-path.expand("k:/git/flaishansetal_watershedscaling/")
+}
+#tom mac air
+if(Sys.info()[4]=="stp-air"){
+  ws_dir<-path.expand("~/git/flaishansetal_watershedscaling/")
 }
 
 #subdirectories
