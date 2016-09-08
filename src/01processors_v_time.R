@@ -21,7 +21,7 @@ speedup_model_only <- base_mean/mean_times
 speedup_model_w_io_vector <- proc_v_time$model_w_io[!is.na(proc_v_time$model_w_io)]
 speedup_model_w_io <- speedup_model_w_io_vector[1]/speedup_model_w_io_vector
 speedup_post_process_vector <- proc_v_time$post_process[!is.na(proc_v_time$post_process)]
-speedup_post_process <- speedup_model_post_process[1]/speedup_model_post_process
+speedup_post_process <- speedup_post_process_vector[1]/speedup_post_process_vector
 
 
 #add wall time for serial write
@@ -50,22 +50,22 @@ l99 = 1/((1-p99) + p99/proc)
 
 amdahl_df <- data.frame(cbind(proc,l50,l75,l90,l95,l99,
                 speedup_model_only,speedup_model_w_io,speedup_post_process))
-View(amdahl_df)
+#View(amdahl_df)
 
 amdahl_melt <- melt(amdahl_df, id.vars="proc")
 dim(amdahl_melt)
 summary(amdahl_melt)
-View(amdahl_melt)
+#View(amdahl_melt)
 
 amdahl_melt$variable <- factor(amdahl_melt$variable, 
     levels = c("l99","speedup_model_only","l95","speedup_model_w_io","l90","l75","speedup_post_process","l50"),
     labels=c("99%","Model only","95%","Model with IO","90%","75%","Post-processing","50%")
     )
-View(amdahl_melt)
+#View(amdahl_melt)
 
 #line plot
 pdf(file= paste(ws_dir_figures, "fig1_procvspeed.pdf", sep=""), width = 4, height = 6)
-  ggplot(data=amdahl, aes(x=proc,y=value, group=variable)) +
+  ggplot(data=amdahl_melt, aes(x=proc,y=value, group=variable)) +
     geom_line() +
     geom_point() +
     xlab("# Processors") + 
