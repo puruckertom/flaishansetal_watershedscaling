@@ -63,6 +63,7 @@ breakout <- ggplot(seq_v_rand, aes(time)) +
   geom_histogram(data=subset(seq_v_rand,runtype=='random'), fill = "red", alpha = 0.2) + 
   geom_histogram(data=subset(seq_v_rand,runtype=='sequential'), fill = "blue", alpha = 0.2) +
   theme_bw()
+breakout
 
 pdf(file= paste(ws_dir_figures, "fig2_breakout.pdf", sep=""), width = 8, height = 6)
   breakout
