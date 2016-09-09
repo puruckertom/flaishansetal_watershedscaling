@@ -15,8 +15,12 @@ var_seq <- which(wall_time$run_type=="seq")
 wall_time <- wall_time[-var_seq,]
 
 #ggplot(seq_v_rand, aes(proc, time, fill=factor(runtype)))
+#wall_time$wt_colors <- as.factor(c(rep("firebrick3",40),rep("steelblue",40)))
 wall_time_plot <- ggplot(wall_time, aes(factor(run_type), time, fill=factor(run_type))) +
   geom_boxplot(show.legend=FALSE) +
+  scale_fill_manual(name = "This is my title", values = c("firebrick3", "steelblue"),
+                    labels = c("random_io" = "Foo", "seq_io" = "Bar")) +
+  #scale_colour_manual(values = c("firebrick3",  "steelblue")) +
   #theme(legend.position = "none",  axis.title.x=element_blank(), axis.text.x=element_blank()) +
   theme_bw()
   #coord_flip()
@@ -60,9 +64,10 @@ pdf(file= paste(ws_dir_figures, "fig2_proc_rand_seq.pdf", sep=""), width = 8, he
 dev.off()
 
 breakout <- ggplot(seq_v_rand, aes(time)) + 
-  geom_histogram(data=subset(seq_v_rand,runtype=='random'), fill = "red", alpha = 0.2) + 
-  geom_histogram(data=subset(seq_v_rand,runtype=='sequential'), fill = "blue", alpha = 0.2) +
+  geom_histogram(data=subset(seq_v_rand,runtype=='random'), fill = "firebrick3", alpha = 0.6) + 
+  geom_histogram(data=subset(seq_v_rand,runtype=='sequential'), fill = "steelblue", alpha = 0.6) +
   theme_bw()
+breakout
 
 pdf(file= paste(ws_dir_figures, "fig2_breakout.pdf", sep=""), width = 8, height = 6)
   breakout
