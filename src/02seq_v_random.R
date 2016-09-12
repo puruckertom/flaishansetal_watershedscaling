@@ -16,18 +16,17 @@ colnames(wall_time)
 
 #ggplot(seq_v_rand, aes(proc, time, fill=factor(runtype)))
 #wall_time$wt_colors <- as.factor(c(rep("firebrick3",40),rep("steelblue",40)))
-wall_time_plot <- ggplot(wall_time, aes(factor(run_type), time, fill=factor(run_type))) +
-  geom_boxplot(show.legend=FALSE) +
-  scale_fill_manual(name = "This is my title", values = c("firebrick3", "steelblue","firebrick3", "steelblue")) + 
-                    #labels = c("random_io" = "Foo", "seq_io" = "Bar","random" = "Foo", "seq" = "Bar")
-  #scale_colour_manual(values = c("firebrick3",  "steelblue")) +
-  #theme(legend.position = "none",  axis.title.x=element_blank(), axis.text.x=element_blank()) +
-  theme_bw()
-  #coord_flip()
-  #scale_y_continuous(limits=c(0,max(wall_time$time))) +
-  #guides(fill=FALSE) +
-  #theme_bw() +
-  #theme(legend.position = "none",  axis.title.x=element_blank(), axis.text.x=element_blank())
+color_order <- c("firebrick", "firebrick4","steelblue", "steelblue4")
+label_order <- c("Random","Random + Write","Seq","Seq + Write")
+group_order <- c("Random","Sequential")
+wall_time_plot <- ggplot(wall_time, aes(x=run_class, y=time, fill=run_type)) +
+                    # fill=factor(run_type)
+  scale_fill_manual(values = color_order) +
+  labs(x = "Type", y="Processing Time (s)") +
+  geom_boxplot(show.legend=TRUE) +
+  guides(fill=guide_legend(title=NULL)) +
+  theme_bw() + 
+  theme(legend.position = "bottom") 
 wall_time_plot
 
 pdf(file= paste(ws_dir_figures, "fig2_wall_time.pdf", sep=""), width = 8, height = 6)
@@ -49,8 +48,8 @@ factor(seq_v_rand$runtype)
 seq_rand_proc <- ggplot(seq_v_rand, aes(proc, time, fill=factor(runtype))) +
   geom_boxplot() +
   scale_x_discrete(labels=1:16) +
-  #scale_fill_manual(values = c("yellow", "orange")) +
-  xlab("Processor Completion (Fastest to Slowest)") + 
+  scale_fill_manual(values = c("firebrick", "steelblue")) +
+  xlab("Processor Completion") + 
   ylab("Time (n=20)") +
   ggtitle("Processor Time Comparison") +
   theme_bw() +
@@ -64,9 +63,10 @@ pdf(file= paste(ws_dir_figures, "fig2_proc_rand_seq.pdf", sep=""), width = 8, he
 dev.off()
 
 breakout <- ggplot(seq_v_rand, aes(time)) + 
-  geom_histogram(data=subset(seq_v_rand,runtype=='random'), fill = "firebrick3", alpha = 0.6) + 
-  geom_histogram(data=subset(seq_v_rand,runtype=='sequential'), fill = "steelblue", alpha = 0.6) +
-  theme_bw()
+  geom_histogram(data=subset(seq_v_rand,runtype=='random'), fill = "firebrick4", alpha = 0.6, bins=20) + 
+  geom_histogram(data=subset(seq_v_rand,runtype=='sequential'), fill = "steelblue4", alpha = 0.6, bins=20) +
+  theme_bw() #+
+  #labs(x = "Time (s)", y="Count") +
 breakout
 
 pdf(file= paste(ws_dir_figures, "fig2_breakout.pdf", sep=""), width = 8, height = 6)
@@ -74,7 +74,7 @@ pdf(file= paste(ws_dir_figures, "fig2_breakout.pdf", sep=""), width = 8, height 
 dev.off()
 
 ###combine into 1 figure
-layout_1 <- matrix(c(1,2,2,1,3,3), nrow= 2, ncol=3, byrow = TRUE)
+layout_1 <- matrix(c(1,1,2,2,2,1,1,3,3,3), nrow= 2, ncol=5, byrow = TRUE)
 plots_1 <- list()
 plots_1[[1]] <- wall_time_plot
 plots_1[[2]] <- seq_rand_proc
@@ -85,3 +85,6 @@ pdf(file= paste(ws_dir_figures, "fig2_proc_write_breakdown.pdf", sep=""), width 
   multiplot(plotlist = plots_1, layout = layout_1)
 dev.off()
 
+png(file= paste(ws_dir_figures, "fig2_proc_write_breakdown.png", sep=""), width = 10, height = 6, units='in', pointsize=12, res=300)
+  multiplot(plotlist = plots_1, layout = layout_1)
+dev.off()
