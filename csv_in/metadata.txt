@@ -1,1 +1,18 @@
-metadata here
+the file lakes_per_bin.csv contains 2 fields, lakes and bin which is used to create the lake count histogram that shows the number of lakes per ascending “lake bin” and the distribution of the number of reaches per lake within each “lake bin.”
+
+seq_v_random.csv contains 4 fields runtype, proc, sim, and time, with time in seconds. Processing and write times are based on sequential and random batching of the hydrologic units in the Ohio River Valley region. Four sets of SAM simulations were conducted
+with 16 worker processes that measured execution time with and without file writing for the
+sequential and random batching scenarios. Used in figure 6A to demonstrate difference of base
+execution times and the additional post-processing time that file writing takes after model
+execution. Figure 6B shows that randomization of the hydrologic units for processing evens the
+end times of different worker processes and balances the workload more evenly, although this
+produces a significant write queue (Figure 6C) that means total execution time takes longer for
+the random+write scenario than sequential+write processing.
+
+time_v_processor.csv Realized speedups are presented as a function of the number (1, 2, 4, 8, 16, 24, and
+32) of processors (logical cores) used for SAM simulations.
+
+upstream_reaches_per_bin.csv contains 3 fields count, bin, upstream_reaches. Used to create the figure showing the distribution of the number of reaches per lake within each “lake bin.”
+
+wall_time.csv contains 3 fields run_class, run_type, time. Used to create the table that shows Total processing and model run times for single and multiprocess simulation.
+
